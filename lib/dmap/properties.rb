@@ -9,8 +9,7 @@ module DMap
   
       def valid?(klass)
         begin
-          # Don't need if I need to do the sub() thing anymore...
-          self.const_get(klass.capitalize.sub('Datetime', 'DateTime')).is_a?(Class)
+          self.const_get(klass.capitalize).is_a?(Class)
         rescue
           false
         end

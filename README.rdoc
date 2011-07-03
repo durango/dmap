@@ -125,7 +125,7 @@ That's all the ones I know for now, let me know if there are more!
 
 A list of all of the validates_*_of commands and which DMap currently supports
 
-[DataMapper's List]:: DMap Command</b>
+<b>DataMapper's List</b>:: <b>DMap Command</b>
 <tt>validates_absence_of</tt>::  <tt>absence, absent</tt>
 <tt>validates_acceptance_of</tt>::  <tt>acceptance, accept</tt> - Does not accept :allow_nil options yet
 <tt>validates_with_block</tt>:: Unsupported at this time
