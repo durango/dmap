@@ -1,0 +1,25 @@
+module DMap
+  module Validations
+    class Confirmation
+      def self.parent_name
+        "Confirmation"
+      end
+
+      def self.validate(command=nil)
+        {:confirm => command.to_sym}
+      end
+    end
+    class Confirm < Confirmation; end
+
+    class Acceptance
+      def self.parent_name
+        "Acceptance"
+      end
+
+      def self.validate(command=nil)
+        {:accept => command.to_s}
+      end
+    end
+    class Accept < Acceptance; end
+  end
+end

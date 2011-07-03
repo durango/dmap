@@ -1,0 +1,172 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'fileutils'
+require 'erb'
+
+$: << File.join(File.dirname(__FILE__), '../lib/')
+require 'dmap'
+
+opt_parser = OptionParser.new do |opt|
+  opt.banner = "Usage: dmap COMMAND [OPTIONS]"
+  opt.separator ""
+  opt.separator "Commands"
+  opt.separator "     new <model name> [options]: Creates a new model"
+  opt.separator "       e.g. dmap new User serial:id str:name:length=1..5,unique str:email text:signature"
+  opt.separator ""
+end
+
+opt_parser.parse!
+
+if ARGV[0].nil?
+  puts opt_parser
+  exit 1
+end
+
+unless DMap::Commands.exists?(ARGV[0])
+  puts ARGV[0] + " is not a valid command."
+  puts opt_parser
+  exit 1
+end
+
+# safe guard table names
+table_names = ARGV[1].match /^\[*([a-zA-Z0-9,_]+)\]*$/
+if table_names.nil?
+  puts "Invalid table name, only characters A-Z, 0-9, and _ are allowed."
+  puts opt_parser
+  exit 1
+end
+
+# Store all of the tables for this action
+table_names[1].split(',').each do |table|
+  # camelcase model name
+  model_name = table.capitalize
+  model_name.gsub!(/(_(.))/) { |a| a.sub('_','').upcase }
+  table.downcase!
+
+  DMap::Tables.add model_name, model_name.underscore
+  if File.file? "./#{table}.rb"
+    puts "A model with the name of #{table} already exists."
+    exit 1
+  end
+end
+
+ARGV[2..-1].each do |command|
+  # TODO: Add a shortcut module/class
+  command = "serial:id" if command == "id"
+
+  keys = command.split(':')
+  unless DMap::Fields.list.include?(keys[0]) or DMap::Properties.valid?(keys[0].camelcase)
+    puts keys[0] + " is not a valid property or field"
+    puts opt_parser
+    exit 1
+  end
+
+  # Check if the "command" is a key first (keys always overrule)
+  if DMap::Fields.list.include?(keys[0])
+    keys.unshift(DMap::Fields.list[keys[0]])
+  else
+    # Can't create two fields with the same name
+    if DMap::Fields.list.include?(keys[1])
+      puts keys[1] + " is already a declared field. You cannot declare a field twice."
+      puts opt_parser
+      exit 1
+    end
+
+    # We really only need to do this when we're declaring a field with a type
+    # Gets proper property name (e.g. "Dt" becomes "DateTime")
+    property_class = DMap::Properties.const_get(keys[0].camelcase)
+    begin
+      keys[0] = property_class.superclass.parent_name
+    rescue
+      keys[0] = keys[0].camelcase
+    end
+
+    # Allow to declare multiple fields at once
+    keys[1].split(',').each do |key|
+      DMap::Fields.add key, keys[0]
+      DMap::Tables.list.each do |table|
+        DMap::Properties.add table, key, keys[0], 'type'
+      end
+    end
+  end
+
+  # Add validations
+  unless keys[2].nil?
+    keys[2].split(',').each do |cmds|
+      validation = cmds.split('=')
+
+      # Let's check if it's a validates_*_of first
+      begin
+        if DMap::Validations.const_defined? validation[0].camelcase
+            # See if we're just an alias command...
+            original_class = DMap::Validations.const_get(validation[0].camelcase)
+            begin
+              original_name = original_class.superclass.parent_name
+            rescue
+              original_name = validation[0].camelcase
+            end
+            original_name = original_name.underscore.downcase
+
+            # Compile all of the otptions for the validation
+            struct = DMap::Validations.const_get(original_name.camelcase).validate validation[1]
+
+            # Finally, add the validations!
+            struct.each do |key, value|
+              DMap::Validations.add keys[1], original_name, key, value unless value.nil? || key == :cmd
+            end
+          next
+        end
+      end
+
+      # Does the validation exist
+      property = DMap::Properties.const_get keys[0].capitalize
+      unless property.respond_to? validation[0] or DMap::Validations.respond_to? validation[0]
+        puts "Invalid validation command " + validation[0] + " in type " + property.to_s
+        puts opt_parser
+        exit 1
+      end
+
+      # Use class specific validation or generic if one doesn't exist
+      use_method = property.method validation[0] if property.respond_to? validation[0]
+      use_method = DMap::Validations.method validation[0] unless use_method
+
+      # Check to see if the validation returns true based on our input
+      unless use_method.call(validation[1]) == true
+        puts "Invalid value for validation " + validation[0] + " in type " + property.to_s
+        puts opt_parser
+        exit 1
+      end
+
+      # Add the "core" validations (on properties)
+      DMap::Tables.list.each do |table|
+        validation[1] = true if validation[1].nil?
+        DMap::Properties.add table, keys[1], validation[1], validation[0]
+      end
+    end
+  end
+end
+
+# Good for debugging
+#p DMap::Fields.list
+#p DMap::Tables.list
+#p DMap::Properties.list
+#p DMap::Validations.list
+#p DMap::Associations.list TODO
+
+case ARGV[0]
+when "new"
+  DMap::Tables.list.each do |table|
+    properties = DMap::Properties.list[table]
+    validations = DMap::Validations.list
+    p "Compiling model " + table[0]
+    obj = $new_block.result(binding)
+
+    handler = File.new(table[1] + ".rb", "w")
+    handler.write(obj)
+    handler.close
+    p table[0] + " saved successfully"
+  end
+else
+  puts opt_parser
+end
