@@ -3,7 +3,7 @@ lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
-  s.name        = 'dmap'
+  s.name        = 'dmapper'
   s.version     = '0.1'
   s.summary     = "Generators for DataMapper"
   s.description = "Create models easily for DataMapper using the command line."

@@ -3,7 +3,7 @@
 DMap is a generator for creating models with {DataMapper}[http://datamapper.org]. It's currently under a lot of development but I, as well as others, use it when for production use. As of right now majority of the validations work as expected and property types.
 
 == Installation
-    gem install dmap
+    gem install dmapper
 
 == Usage
 
@@ -82,19 +82,19 @@ Which creates (along with a copy model "UserCopy" of the same exact thing)
 Here is a list of all the types available from DataMapper, which ones we support, and custom aliases.
 
 <table>
-<tr><td>[DataMapper Property Type]</td><td>[DMap Command]</td><td>[Aliases]</td></tr>
-<tr><td><tt>Boolean</tt></td><td><tt>Boolean</tt></td><td><tt>Bool</tt></td></tr>
-<tr><td><tt>String</tt></td><td><tt>String</tt></td><td><tt>Str, S</tt></td></tr>
-<tr><td><tt>Text</tt></td><td><tt>Text</tt></td><td><tt>Txt</tt></td></tr>
-<tr><td><tt>Float</tt></td><td><tt>Float</tt></td><td><tt>F</tt></td></tr>
-<tr><td><tt>Integer</tt></td><td><tt>Integer</tt></td><td><tt>Int, I</tt></td></tr>
-<tr><td><tt>Decimal</tt></td><td><tt>Decimal</tt></td><td><tt>Dec</tt></td></tr>
-<tr><td><tt>DateTime</tt></td><td><tt>DateTime</tt></td><td><tt>DT</tt></td></tr>
-<tr><td><tt>Date</tt></td><td><tt>Date</tt></td><td><tt>D</tt></td></tr>
-<tr><td><tt>Time</tt></td><td><tt>Time</tt></td><td><tt>T</tt></td></tr>
-<tr><td><tt>Object</tt></td><td><tt>Object</tt></td><td><tt>Obj</tt></td></tr>
-<tr><td><tt>Discriminator</tt></td><td><tt>Discriminator</tt></td><td><tt>Disc</tt></td></tr>
-<tr><td><tt>Binary</tt></td><td><tt>Binary</tt></td><td><tt>Blob, B</tt></td></tr>
+[DataMapper Property Type]</td><td>[DMap Command]</td><td>[Aliases]
+<tt>Boolean</tt>::<tt>Boolean</tt>::<tt>Bool</tt>
+<tt>String</tt>::<tt>String</tt>::<tt>Str, S</tt>
+<tt>Text</tt>::<tt>Text</tt>::<tt>Txt</tt>
+<tt>Float</tt>::<tt>Float</tt>::<tt>F</tt>
+<tt>Integer</tt>::<tt>Integer</tt>::<tt>Int, I</tt>
+<tt>Decimal</tt>::<tt>Decimal</tt>::<tt>Dec</tt>
+<tt>DateTime</tt>::<tt>DateTime</tt>::<tt>DT</tt>
+<tt>Date</tt>::<tt>Date</tt>::<tt>D</tt>
+<tt>Time</tt>::<tt>Time</tt>::<tt>T</tt>
+<tt>Object</tt>::<tt>Object</tt>::<tt>Obj</tt>
+<tt>Discriminator</tt>::<tt>Discriminator</tt>::<tt>Disc</tt>
+<tt>Binary</tt>::<tt>Binary</tt>::<tt>Blob, B</tt>
 </table>
 
 More coming soon!
@@ -112,16 +112,14 @@ Each validator is separated by a comma (<tt>,</tt>) and can have a value placed 
 
 === Property Validator List
 
-<table>
-<tr><td>[DataMapper's List]</td><td>[DMap Command]</td></tr>
-<tr><td><tt>required</tt></td><td><tt>required</tt></td></tr>
-<tr><td><tt>default</tt></td><td><tt>default</tt></td></tr>
-<tr><td><tt>key</tt></td><td><tt>key</tt></td></tr>
-<tr><td><tt>lazy</tt></td><td><tt>lazy</tt> - Only accepts "false" for now</td></tr>
-<tr><td><tt>accessor</tt></td><td><tt>accessor</tt></td></tr>
-<tr><td><tt>writer</tt></td><td><tt>writer</tt></td></tr>
-<tr><td><tt>reader</tt></td><td><tt>reader</tt></td></tr>
-</table>
+[DataMapper's List]:: [DMap Command]
+<tt>required</tt>:: <tt>required</tt>
+<tt>default</tt>::  <tt>default</tt>
+<tt>key</tt>::  <tt>key</tt>
+<tt>lazy</tt>:: <tt>lazy</tt> - Only accepts "false" for now
+<tt>accessor</tt>:: <tt>accessor</tt>
+<tt>writer</tt>:: <tt>writer</tt>
+<tt>reader</tt>:: <tt>reader</tt>
 
 That's all the ones I know for now, let me know if there are more!
 
@@ -129,21 +127,19 @@ That's all the ones I know for now, let me know if there are more!
 
 A list of all of the validates_*_of commands and which DMap currently supports
 
-<table>
-<tr><td>[DataMapper's List]</td><td>[DMap Command]</td><td>[Notes]</td></tr>
-<tr><td><tt>validates_absence_of</tt></td><td><tt>absence, absent</tt></td><td></td></tr>
-<tr><td><tt>validates_acceptance_of</tt></td><td><tt>acceptance, accept</tt></td><td>Does not accept :allow_nil options yet</td></tr>
-<tr><td><tt>validates_with_block</tt></td><td></td><td>Unsupported at this time</td></tr>
-<tr><td><tt>validates_confirmation_of</tt></td><td><tt>confirmation, confirm</tt></td><td></td></tr>
-<tr><td><tt>validates_format_of</tt></td><td><tt>format</tt></td><td></td></tr>
-<tr><td><tt>validates_length_of</tt></td><td><tt>length_of</tt></td><td></td></tr>
-<tr><td><tt>validates_with_method</tt></td><td><tt>withmethod, method</tt></td><td></td></tr>
-<tr><td><tt>validates_numericality_of</tt></td><td><tt>Unsupported</tt></td><td></td></tr>
-<tr><td><tt>validates_primitive_type_of</tt></td><td><tt>primitive</tt></td><td></td></tr>
-<tr><td><tt>validates_presence_of</tt></td><td><tt>presence, present</tt></td><td></td></tr>
-<tr><td><tt>validates_uniqueness_of</tt></td><td><tt>uniqueness</tt></td><td></td></tr>
-<tr><td><tt>validates_within</tt></td><td>within</td><td></td></tr>
-</table>
+[DataMapper's List]::   [DMap Command] [Notes]
+<tt>validates_absence_of</tt>:: <tt>absence, absent</tt>
+<tt>validates_acceptance_of</tt>::  <tt>acceptance, accept</tt>:: Does not accept :allow_nil options yet
+<tt>validates_with_block</tt>:: </td><td>Unsupported at this time
+<tt>validates_confirmation_of</tt>::  <tt>confirmation, confirm</tt>
+<tt>validates_format_of</tt>::  <tt>format</tt>
+<tt>validates_length_of</tt>::  <tt>length_of</tt>
+<tt>validates_with_method</tt>::  <tt>withmethod, method</tt>
+<tt>validates_numericality_of</tt>::  <tt>Unsupported</tt>
+<tt>validates_primitive_type_of</tt>::  <tt>primitive</tt>
+<tt>validates_presence_of</tt>::  <tt>presence, present</tt>
+<tt>validates_uniqueness_of</tt>::  <tt>uniqueness</tt>
+<tt>validates_within</tt>:: <tt>within</tt>
 
 == To Do
 
