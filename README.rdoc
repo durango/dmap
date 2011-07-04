@@ -1,6 +1,8 @@
 = DMap
 
-DMap is a generator for creating models with {DataMapper}[http://datamapper.org]. It's currently under a lot of development but I, as well as others, use it when for production use. As of right now majority of the validations work as expected and property types.
+DMap is a generator for creating models with {DataMapper}[http://datamapper.org]. It's currently under a lot of development but I, as well as others, use it for production use. DataMapper gems are not even required for this gem/tool.
+
+"DMap a shorter way for saying, and using, DataMapper"
 
 == Installation
     gem install dmapper
@@ -9,53 +11,60 @@ DMap is a generator for creating models with {DataMapper}[http://datamapper.org]
 
 As of right now the only command available is <tt>new</tt>. Here's a basic example of DMap to explain the structure...
 
-    dmap new user id str:name str:email:required,unique str:password:required
+    dmap new user id name:string email:str:required,unique str:password:required
 
 The first, after <tt>dmap new</tt>, is the [table]. You can create multiple tables at a time by adding a comma (,). Every argument (<tt>space</tt>) is a separate [field]. Fields are divided into three sections by a colon (<tt>:</tt>). The first part is the field's [type]. The second part is the field's name, and the last part marks additional options for that field (explained later).
+
+== Options
+
+<b><tt>-b, --backup</tt></b>:: Backs up the current model files (renames them to *.rb.bk)
+<b><tt>-h, --help</tt></b>::  Displays help message
+<b><tt>-s, --silent</tt></b>:: If you entered incorrect values for a validation just suppress it and continue on.
+<b><tt>-t, --test</tt></b>:: Displays what DMap would have made into a file onto the screen.
+<b><tt>-v, --verbose</tt></b>:: Will print out the model(s) after changes have been made
 
 == Examples
 
 Using DMap is incredibly easy once you learn the basic structure of it all. Here's a quick example...
 
-    dmap new user id str:username str:email text:signature
+    dmap new user id username:str email:str signature:text
 
 Which creates (user.rb file in the folder that you're currently in)...
 
     class User
       include DataMapper::Resource
     
-      property :signature
-      property :username
-      property :id
-      property :email
+      property :id, Serial
+      property :username, String
+      property :email, String
+      property :signature, Text
     
     
     end
 
 Let's get a little more "complex"
 
-    dmap new user id str:username str:email,required str:name:required,unique str:password datetime:date_created:default=Time.now text:signature
+    dmap new user id username:str email:str:required name:str:required,unique password:str date_crtd:datetime:default=DateTime.now signature:text
 
 Which produces...
 
     class User
       include DataMapper::Resource
     
-      property :name, String, :required => true, :unique => true
-      property :required, String
-      property :signature, Text
-      property :username, String
       property :id, Serial
+      property :username, String
+      property :email, String, :required => true
+      property :name, String, :required => true, :unique => true
       property :password, String
-      property :date_created, DateTime, :default => Time.now
-      property :email, String
+      property :date_crtd, DateTime, :default => proc => { DateTime.now }
+      property :signature, Text
     
     
     end
 
 I know, still not that impressive, let's try something a tad more difficult...
 
-    dmap new user,user_copy id str:first_name,last_name datetime:name1:default=true,length=1..5,presence_of=title-publish20..50,length_of=1,absent,confirm=field,format=email_address,primitive,unique,accessor=private str:Name1
+    dmap new user,user_copy id first_name,last_name:str name1:datetime:default=true,length=1..5,presence_of=title-publish20..50,length_of=1,absent,confirm=field,format=email_address,primitive,unique,accessor=private Name1:str
 
 Which creates (along with a copy model "UserCopy" of the same exact thing)
 
@@ -63,10 +72,10 @@ Which creates (along with a copy model "UserCopy" of the same exact thing)
       include DataMapper::Resource
     
       property :id, Serial
-      property :name1, DateTime, :default => true, :accessor => private, :unique => true, :length => 1..5
-      property :last_name, String
-      property :Name1, String
       property :first_name, String
+      property :last_name, String
+      property :name1, DateTime, :default => true, :length => 1..5, :unique => true, :accessor => :private
+      property :Name1, String
     
       validates_format_of :name1, :as => :email_address 
       validates_confirmation :name1, :confirm => :field 
@@ -82,18 +91,18 @@ Which creates (along with a copy model "UserCopy" of the same exact thing)
 Here is a list of all the types available from DataMapper, which ones we support, and custom aliases.
 
 <b>DataMapper Property Type</b>:: <b>DMap Command/Aliases</b>
-<tt>Boolean</tt>::  <tt>Boolean</tt>, <tt>Bool</tt>
-<tt>String</tt>:: <tt>String</tt>, <tt>Str, S</tt>
-<tt>Text</tt>:: <tt>Text</tt>, <tt>Txt</tt>
-<tt>Float</tt>::  <tt>Float</tt>, <tt>F</tt>
-<tt>Integer</tt>::  <tt>Integer</tt>, <tt>Int, I</tt>
-<tt>Decimal</tt>::  <tt>Decimal</tt>, <tt>Dec</tt>
-<tt>DateTime</tt>:: <tt>DateTime</tt>, <tt>DT</tt>
-<tt>Date</tt>:: <tt>Date</tt>, <tt>D</tt>
-<tt>Time</tt>:: <tt>Time</tt>, <tt>T</tt>
-<tt>Object</tt>:: <tt>Object</tt>, <tt>Obj</tt>
-<tt>Discriminator</tt>::  <tt>Discriminator</tt>, <tt>Disc</tt>
-<tt>Binary</tt>:: <tt>Binary</tt>, <tt>Blob, B</tt>
+<tt>Boolean</tt>::  <tt>boolean</tt>, <tt>bool</tt>
+<tt>String</tt>:: <tt>string</tt>, <tt>str, s</tt>
+<tt>Text</tt>:: <tt>text</tt>, <tt>txt</tt>
+<tt>Float</tt>::  <tt>float</tt>, <tt>f</tt>
+<tt>Integer</tt>::  <tt>integer</tt>, <tt>int, i</tt>
+<tt>Decimal</tt>::  <tt>decimal</tt>, <tt>dec</tt>
+<tt>DateTime</tt>:: <tt>datetime</tt>, <tt>dt</tt>
+<tt>Date</tt>:: <tt>date</tt>, <tt>d</tt>
+<tt>Time</tt>:: <tt>time</tt>, <tt>t</tt>
+<tt>Object</tt>:: <tt>object</tt>, <tt>obj</tt>
+<tt>Discriminator</tt>::  <tt>discriminator</tt>, <tt>disc</tt>
+<tt>Binary</tt>:: <tt>binary</tt>, <tt>blob, b</tt>
 
 More coming soon!
 
@@ -101,7 +110,7 @@ More coming soon!
 
 This part belongs in the third section of the command for example:
 
-    dmap new user id str:name:[required,accessor=private]
+    dmap new user id name:str:<b>required,accessor=private</b>
 
 Each validator is separated by a comma (<tt>,</tt>) and can have a value placed within it by an equal sign (<tt>=</tt>). The property name will look like...
 
@@ -114,7 +123,7 @@ Each validator is separated by a comma (<tt>,</tt>) and can have a value placed 
 <tt>required</tt>:: <tt>required</tt>
 <tt>default</tt>::  <tt>default</tt>
 <tt>key</tt>::  <tt>key</tt>
-<tt>lazy</tt>:: <tt>lazy</tt> - Only accepts "false" for now
+<tt>lazy</tt>:: <tt>lazy</tt>
 <tt>accessor</tt>:: <tt>accessor</tt>
 <tt>writer</tt>:: <tt>writer</tt>
 <tt>reader</tt>:: <tt>reader</tt>
@@ -125,27 +134,39 @@ That's all the ones I know for now, let me know if there are more!
 
 A list of all of the validates_*_of commands and which DMap currently supports
 
+Note: DMap currently does not support :allow_nil parameters. This will change in the future.
+
 <b>DataMapper's List</b>:: <b>DMap Command</b>
 <tt>validates_absence_of</tt>::  <tt>absence, absent</tt>
-<tt>validates_acceptance_of</tt>::  <tt>acceptance, accept</tt> - Does not accept :allow_nil options yet
+<tt>validates_acceptance_of</tt>::  <tt>acceptance, accept</tt>
 <tt>validates_with_block</tt>:: Unsupported at this time
 <tt>validates_confirmation_of</tt>::  <tt>confirmation, confirm</tt>
 <tt>validates_format_of</tt>::  <tt>format</tt>
 <tt>validates_length_of</tt>::  <tt>length_of</tt>
 <tt>validates_with_method</tt>::  <tt>withmethod, method</tt>
-<tt>validates_numericality_of</tt>::  <tt>Unsupported</tt>
+<tt>validates_numericality_of</tt>::  Unsupported
 <tt>validates_primitive_type_of</tt>::  <tt>primitive</tt>
 <tt>validates_presence_of</tt>::  <tt>presence, present</tt>
 <tt>validates_uniqueness_of</tt>::  <tt>uniqueness</tt>
 <tt>validates_within</tt>:: <tt>within</tt>
 
+== Associations
+
+<b>DataMapper Command</b>:: <b>DMap Command</b>
+<tt>has 1</tt>::  <tt>has1, hasone</tt>
+<tt>has n</tt>::  <tt>hasn</tt>
+<tt>belongs_to</tt>:: <tt>belongs_to, belongs</tt>
+<tt>has_and_belongs_to_many</tt>::  <tt>hasmany</tt>
+
+Note: use hasn when wanting to use :through => :model and hasmany for wanting to :through => Resource
+
+Also, conditions are <b>not</b> supported through this generator (suggestions on this could be implemented would be helpful).
+
 == To Do
 
-* Add a verbose option
 * Add a way to add/edit/remove columns from pre-existing tables
-* Backup option before overwriting
 * All of the misc. property types
-* Better validation checkers
-* Associations! (this will be done first)
 * Template system similar to {Sinatra::Fedora's}[https://github.com/durango/sinatra_fedora] hatrack option
 * Better documentation!
+* Migrations! (This will most likely be started after DM core team has finished the Veritas system).
+* Conditions with associations?

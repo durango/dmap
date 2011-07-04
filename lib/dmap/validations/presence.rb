@@ -5,6 +5,10 @@ module DMap
         "PresenceOf"
       end
 
+      def self.is_valid?(command=nil)
+        true
+      end
+
       def self.validate(command=nil)
         ret = DMap::Validations::Core::Numbers.run command
         ret1 = DMap::Validations::Core::When.run ret[:cmd]

@@ -32,10 +32,11 @@
 libdir = File.dirname(__FILE__)
 $LOAD_PATH.unshift(libdir) unless $LOAD_PATH.include?(libdir)
 
-# Core
+# core
 require 'dmap/core'
+require 'support/ordered_hash'
 
-# Properties
+# properties
 require 'dmap/properties/core'
 require 'dmap/properties/boolean'
 require 'dmap/properties/date' # DateTime, Date and Time
@@ -45,16 +46,24 @@ require 'dmap/properties/misc' # Object, Discriminator, Blob
 require 'dmap/properties/serial'
 require 'dmap/properties/string' # String and Text
 
-# Validations
+# validations
 require 'dmap/validations/core'
 require 'dmap/validations/absence'
-require 'dmap/validations/confirmation' # Confirmation and Acceptance
+require 'dmap/validations/access' # accessor, writer, and reader
+require 'dmap/validations/confirmation' # confirmation and acceptance
 require 'dmap/validations/format'
 require 'dmap/validations/length'
+require 'dmap/validations/misc' # key, required, lazy
 require 'dmap/validations/method'
 require 'dmap/validations/presence'
 require 'dmap/validations/primitive'
+require 'dmap/validations/uniqueness'
 require 'dmap/validations/within'
+
+# associations
+require 'dmap/associations/core'
+require 'dmap/associations/belongs_to'
+require 'dmap/associations/hasn'
 
 # Template for building new model
 require 'dmap/new'

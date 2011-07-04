@@ -5,6 +5,14 @@ module DMap
         "Confirmation"
       end
 
+      def self.is_valid?(command=nil)
+        if command.is_a?(String) or command.is_a?(Symbol)
+          true
+        else
+          false
+        end
+      end
+
       def self.validate(command=nil)
         {:confirm => command.to_sym}
       end

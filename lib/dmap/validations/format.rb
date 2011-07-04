@@ -5,6 +5,11 @@ module DMap
         "FormatOf"
       end
 
+      def self.is_valid?(command=nil)
+        # To many different values to really pin-point
+        true
+      end
+
       def self.validate(command=nil)
         command = command.to_sym if command.match(/^[A-Za-z]/)
         {:as => command}

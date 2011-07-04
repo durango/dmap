@@ -1,0 +1,16 @@
+0.2 July 4th, 2011
+
+* Properties now maintain correct order
+* Added tiny 'helpers' (e.g. Time.now becomes proc => { Time.now })
+* Switched the order of operations (from type:field:options to field:type:options)
+* Lazy accepts true/false/fields
+* Added a verbose option -v
+* Added a testing option -t
+* Added a backup option -b
+* Added a silent/suppress option -s
+* Much better validation handlers (still needs quite a bit of work)
+* Added association support!
+
+0.1 - July 3rd, 2011
+
+* Initial Release

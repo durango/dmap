@@ -5,6 +5,10 @@ module DMap
         "PrimitiveTypeOf"
       end
 
+      def self.is_valid?(command=nil)
+        true # always
+      end
+
       def self.validate(command=nil)
         {:null => true}
       end

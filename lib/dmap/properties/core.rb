@@ -3,26 +3,23 @@ module DMap
     attr_accessor :list
     class << self
       # default methods
-      def required(value)
-        value.is_a?(Boolean)
+      def default
       end
 
       def valid?(klass)
         begin
-          self.const_get(klass.capitalize).is_a?(Class)
+          self.const_get(klass.capitalize).is_a? Class
         rescue
           false
         end
       end
 
       def list
-        @list ||= Hash[]
+        @list ||= OrderedHash.auto
       end
 
       def add(table, property=nil, value=nil, bucket=nil)
-        list[table] = {} if list[table].nil?
         unless property.nil?
-          list[table][property] = {} if list[table][property].nil?
           if bucket.nil?
             list[table].store property, value unless value.nil?
           else
